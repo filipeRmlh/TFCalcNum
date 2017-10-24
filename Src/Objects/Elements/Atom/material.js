@@ -1,0 +1,16 @@
+Material={
+  Polypropylene:{density:0.9},
+  Acrylic:{density:1.19},
+  Aluminum:{density:2.7},
+  Carbon:{density:3.51},
+  Glass:{density:2.4},
+  Iron:{density:7.87},
+  Paper:{density:0.7},
+  Silver:{density:10.5},
+  Titanium:{density:4.5},
+  Bamboo:{density:0.3},
+  Cupper:{density:8.93},
+  Air:{density:0.001225},
+  Water:{density:1},
+  Vacuum:{density:0}
+}

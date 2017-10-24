@@ -17,7 +17,8 @@ var COLLIDE_functions = {
     }
     return {min:minp,max:maxp};
   },
-  Circle_Circle:function(circle1,circle2){
+  circle_circle:function(circle1,circle2){
+
     var point1 = circle1.origin;
     var point2 = circle2.origin;
     var x = point2.x-point1.x;
@@ -25,9 +26,10 @@ var COLLIDE_functions = {
     var module = Normative.module({x: x, y: y});
     var rtotal = circle1.r+circle2.r;
     if(module<rtotal)return false;
+
     return true;
   },
-  Polygon_Polygon:function(polygon1,polygon2){
+  polygon_polygon:function(polygon1,polygon2){
     var points1,points2;
     if(polygon1.points.length<polygon2.points.length){
       points1 = polygon1.points;
@@ -45,7 +47,7 @@ var COLLIDE_functions = {
     }
     return true;
   },
-  Polygon_Circle:function(polygon,circle){
+  polygon_circle:function(polygon,circle){
     var circlePoint = circle.origin;
     var polygonPoints = polygon.points;
     var x,y;
@@ -59,14 +61,33 @@ var COLLIDE_functions = {
       if(((proj2.max>proj1.max)&&(proj2.min>proj1.max))||((proj2.max<proj1.max)&&(proj2.min<proj1.max))) return false;
     }
     return true;
+  },
+  line_line:function(line1,line2){
+    return false;
+  },
+  line_polygon:function(line,polygon){
+    return false;
+  },
+  line_circle:function(line,circle){
+    intervalX = (line.start.x<line.end.x)?[(line.start.x-circle.r/2),(line.end.x+circle.r/2)]:[(line.start.x-circle.r/2),(line.end.x+circle.r/2)];
+    intervalY = (line.start.y<line.end.y)?[(line.start.y-circle.r/2),(line.end.y+circle.r/2)]:[(line.start.y-circle.r/2),(line.end.y+circle.r/2)];
+    if(((circle.origin.x>intervalX[0])&&(circle.origin.x<intervalX[1]))||((circle.origin.y>intervalY[0])&&(circle.origin.y<intervalY[1]))){
+      var d = Math.abs(line.eq.a*circle.origin.x+line.eq.b*circle.origin.y+line.eq.c)/(Math.sqrt(Math.pow(line.eq.a,2)+Math.pow(line.eq.b,2)));
+      return (d<(circle.r+(line.weight/2)));
+    }else{
+      return false;
+    }
+
   }
 }
 var Collider = function(Obj1,Obj2){
-  var name1 = Obj1.name+"".toLowerCase();
-  var name2 = Obj2.name+"".toLowerCase();
+  var name1 = Obj1.name+"";
+  var name2 = Obj2.name+"";
+  name1=name1.toLowerCase();
+  name2=name2.toLowerCase();
   if(typeof COLLIDE_functions[name1+"_"+name2] === "function"){
     return COLLIDE_functions[name1+"_"+name2](Obj1,Obj2);
   }else{
-    return COLLIDE_functions[name1+"_"+name2](Obj2,Obj1);
+    return COLLIDE_functions[name2+"_"+name1](Obj2,Obj1);
   }
 }

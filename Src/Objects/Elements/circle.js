@@ -1,4 +1,4 @@
-importAtom("Point");
+importAtom("Vector");
 var Circle = function(origin,r,options){
   this.name = "Circle";
   this.origin=origin;
@@ -17,6 +17,6 @@ Circle.prototype={
     ctx.closePath();
   },
   collision:function(Obj){
-    COLLISION(this,Obj);
+    return Collider(this,Obj);
   }
 }

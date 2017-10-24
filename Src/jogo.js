@@ -2,7 +2,7 @@ importObject("Screen");
 importObject("Sphere");
 importObject("Wall");
 load(function(){
-  var myscreen = new Screen("canvas",34,{material:Material.Water}); // instancia objeto Screen dando elemento html e número de fps;
+  var myscreen = new Screen("canvas",24,{material:Material.Air}); // instancia objeto Screen dando elemento html e número de fps;
   var a = new Sphere({x:100,y:100}, {name:"a",r:30,material:Material.Paper,fillcolor:"red",h:10});
   var b = new Sphere({x:130,y:80}, {name:"b",r:15,material:Material.Air,fillcolor:"green",h:10});
   var c = new Sphere({x:130,y:90}, {name:"c",r:10,material:Material.Polypropylene,fillcolor:"blue",h:10});

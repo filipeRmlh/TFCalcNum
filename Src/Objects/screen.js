@@ -1,31 +1,33 @@
 var ENV={
   density:0,
-  g:0
+  g:-10,
+  k:9*1000000000
 };
 var Screen = function(selector,fps,options){//construtor do objeto Pscreen;
+  if(selector==undefined)console.error("Não existe um seletor dado");
+  options = options==undefined?{}:options;
   this.obj=[];
-  this.fps = (fps===undefined)?24:fps;
+  this.fps = (fps===undefined)?10:fps;
   this.elm = document.querySelector(selector);
   this.size={w:0,h:0};
   this.trigger();
-  ENV.density = (options==undefined||options.material==undefined||options.material.density==undefined)?Material.Air.density:options.material.density;
+  if(options.material==undefined){
+    options.material = new Material();
+  }
+  ENV.density = options.material.Standard.density
   ENV.g = (options==undefined||options.material==undefined||options.material.gravity==undefined)?10:options.material.gravity;
 }
 Screen.prototype={//métodos do objeto Screen;
   refresh:function(_this){//método que apaga e pinta todos os elementos na tela a cada frame;
-    ctx.clearRect(0,0,_this.size.w,_this.size.h);
+     ctx.clearRect(0,0,_this.size.w,_this.size.h);
     for(var i=0;i<_this.obj.length;i++){
       if(_this.obj.hasOwnProperty(i)){
         _this.obj[i].draw();
-        _this.obj[i].movement();
-        _this.collision(_this.obj[i],i);
+        for(var j=i+1;j<_this.obj.length;j++){
+            _this.obj[i].collision(_this.obj[j]);
+        }
       }
     }
-  },
-  collision:function(obj,i){
-      for(var j=i;j<this.obj.length;j++){
-          obj.collision(this.obj[j]);
-      }
   },
   resize:function(_this){ //método que ajusta o tamanho do "canvas" à TELA;
     var elm = _this.elm;
@@ -44,7 +46,7 @@ Screen.prototype={//métodos do objeto Screen;
 
   },
   add:function(elm){
-    elm.screen = this;
+    elm.screenElms = this.obj;
     this.obj.push(elm);
   }
 }

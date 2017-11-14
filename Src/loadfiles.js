@@ -1,4 +1,17 @@
 var ctx;
+_Prom = function(){};
+_Prom.prototype={
+  el:[],
+  add:function(f){
+    this.el.push(f);
+  },
+  exec:function(){
+    for(var i=0;i<this.el.length;i++){
+      this.el[i]();
+    }
+  }
+}
+var Prom = new _Prom();
 Object.prototype.isEmpty = function () {
     return Object.keys(this).length === 0;
 }
@@ -22,7 +35,7 @@ function loadTree(obj,lista){
   if(obj.isEmpty())return;
   lista = ((lista===undefined)?'':lista);
   for (var i in obj){
-    eval("import"+i.toUpperFirst().replace("s", "")+" = function(file){loadFile(\""+lista+"/"+i+"/\"+file.toLocaleLowerCase()+\".js\");}");
+    eval("import"+i.toUpperFirst().replace("s", "")+" = function(file,test){loadFile(\""+lista+"/"+i+"/\"+file.toLocaleLowerCase()+\".js\");if(test!=undefined){return(test)}}");
     loadTree(obj[i],lista+"/"+i.toUpperFirst());
   }
 }
@@ -37,5 +50,5 @@ function loadFile(url){
 
 loadTree(folderTree);
 var load = function(f){
-  window.addEventListener("load",f);
+  window.addEventListener("load",function(){Prom.exec();f()});
 }

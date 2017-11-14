@@ -1,64 +1,66 @@
-importElement("Circle");
 importAtom("Material");
 var Sphere = function(position,options){
-    this.name = options.name;
-    this.screen;
-    this.material = (options.material==undefined)?Material.Acrylic:options.material;
-    if(options.r==undefined){//se massa não ta definida, pega raio pra definir massa e vice-versa. se nenhum ta definido, massa=100g
-      this.massa = options.massa==undefined?100:options.massa;
-      this.r = Math.pow((3*this.massa)/(4*Math.PI*this.material.density),1/3);
-    }else{
-      this.r = options.r;
-      this.massa=3/4*Math.PI*Math.pow(this.r,3)*this.material.density;
-    }
-    this.element= new Circle(new Vector(position.x,position.y),this.r,options);
-    this.kfluid = -1/2*ENV.density*0.47*Math.PI*Math.pow(this.r*1,2)/1000;
-    this.posk0 = position;
-    this.posk1 = position;
-    this.moveLoop;
-    this.h=((options.h!=undefined)?options.h:15);
+    this.h= options.h==undefined?0.03:options.h;
+    options = options==undefined?{}:options;
+    position = position==undefined?new SAT.Vector():position;
+    options.material = options.material==undefined?new Material():options.material;
+    this.t = 1;
+    this.v = new SAT.Vector();
+    this.name = options.name||"Sphere";
+    this.screenElms;
+    /********Propriedades Físicas*********************/
+    volume = (options.r!=undefined?((4/3)*Math.PI*Math.pow(options.r,3)):undefined);
+    this.density = (options.material==undefined)?undefined:options.material.density;
+    retorno = options.material.getMaterial({volume:volume,density:options.material.density,massa:options.massa});
+    this.massa = retorno.massa;
+    this.density = retorno.density;
+    this.r =  Math.pow((3*retorno.volume)/(4*Math.PI),1/3);
+    /************************************************/
+    this.posk0 = position.clone();
+    this.posk1 = position.clone();
+    this.element= new SAT.Circle(new SAT.Vector(position.x,position.y),this.r,options);
+    this.kfluid = -1*((1/2)*ENV.density*0.47*Math.PI*Math.pow(this.r,2));
+    this.time = 20;
+    this.moveLoop=setTimeout(this.movement,this.time,this);
 }
 Sphere.prototype={
-  setPosition(x,y){
-    this.element.origin.x=x;
-    this.element.origin.y=y;
+  setPosition:function(){
+      this.element.pos.x = this.element.pos.x+this.v.x*this.t;
+      this.element.pos.y = this.element.pos.y+this.v.y*this.t;
   },
-  movement:function(){
-    var h = 1/this.h;
-    var posk2={y:0,x:0};
-      // posk2.y = (2*Math.pow(h,2)*this.massa*ENV.g-(2*this.massa+this.kfluid*h)*this.posk0.y+4*this.massa*this.posk1.y)/(2*this.massa-this.kfluid*h);
-      posk2.y = (2*Math.pow(h,2)*this.massa*ENV.g-(2*this.massa-this.kfluid*h)*this.posk0.y+4*this.massa*this.posk1.y)/(2*this.massa+this.kfluid*h);
-      // posk2.x = (-(2*this.massa+this.kfluid*h)*this.posk0.x+4*this.massa*this.posk1.x)/(2*this.massa-this.kfluid*h);
-      posk2.x = (-(2*this.massa-this.kfluid*h)*this.posk0.x+4*this.massa*this.posk1.x)/(2*this.massa+this.kfluid*h);
-      this.posk0 = this.posk1;
-      this.posk1 = {x:posk2.x,y:posk2.y};
-      this.setPosition(posk2.x,posk2.y);
-  },
-  pauseMovement:function(){
-    clearInterval(this.moveLoop);
+  movement:function(_this){
+    var h = _this.h;
+    var massa = _this.massa;
+    var posk2=new SAT.Vector();
+    posk2.y = (2*Math.pow(h,2)*massa*ENV.g+_this.posk0.y*(_this.kfluid*h-2*massa)+4*massa*_this.posk1.y)/(_this.kfluid*h+2*massa);
+    posk2.x = (_this.posk0.x*(_this.kfluid*h-2*massa)+4*massa*_this.posk1.x)/(_this.kfluid*h+2*massa);
+    _this.posk0.copy(_this.posk1);
+    _this.posk1.copy(posk2);
+    _this.v.x = (_this.posk1.x - _this.posk0.x)/h;
+    _this.v.y = (_this.posk1.y - _this.posk0.y)/h;
+    _this.setPosition();
+    clearTimeout(_this.moveLoop);
+    _this.moveLoop=setTimeout(_this.movement,10,_this);
   },
   collision:function(Obj){
     var format = this.element;
     var format2 = Obj.element;
-    if(format.collision(format2)){
-      this.afterCollision(Obj,format2,format);
-      Obj.afterCollision(this,format,format2);
+    var response = new SAT.Response();
+    if(this.element.collision(format2,response)){
+        this.afterCollision(Obj,format2,format,response);
+        Obj.afterCollision(this,format,format2,response);
     }
   },
-  afterCollision:function(Obj,objFormat,thisFormat){
-    if(objFormat.name == "Line"){
-      this.draw();
-      var theta = Normative.getTheta(objFormat.start, objFormat.end);
-      var h = this.h;
-      var v = Normative.multiplyToEscalar(Normative.subtractVectors(this.posk1,this.posk0),1/h);
-      var modv = Normative.module(v)*0.983;
-      var refV = Normative.reflectVector(Normative.normalize(v),theta);
-      refV = Normative.multiplyToEscalar(refV,modv);
-      this.posk1.x = this.posk0.x+(refV.x)*(h);
-      this.posk1.y = this.posk0.y+(refV.y)*(h);
-    }
+  afterCollision:function(Obj,objFormat,thisFormat,response){
+    var direction= this.v;
+    console.log("FOI");
+    clearTimeout(this.moveLoop);
+    var over = response.overlapV.clone();
+    over.clone().scale(100).draw(this.element.pos);
+    this.element.pos.copy(this.element.pos.add(over));
+    this.moveLoop=setTimeout(this.movement,this.time,this);
   },
   draw:function(){
-      this.element.draw();
+    this.element.draw();
   }
 }

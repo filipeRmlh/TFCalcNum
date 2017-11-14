@@ -1,23 +1,23 @@
-importElement("Line");
-var Wall = function(start, finish, weight,options){
-    this.element = new Line(start,finish,weight,options);
+var Wall = function(start, end, weight,options){
+  start = start==undefined?new Vector():start;
+  end = end==undefined?new Vector():end;
+  weight = weight==undefined?0:weight;
+  options = options==undefined?{}:options;
+  this.name=options.name||"Wall";
+  this.q = 0.01;
+  this.element = SAT.Line(start,end,weight,options);
 }
 Wall.prototype={
-  setPosition(x,y){
-
-  },
-  movement:function(){},
   collision:function(Obj){
     var format = this.element;
     var format2 = Obj.element;
-    if(format.collision(format2)){
-        this.afterCollision(Obj,format2,format);
-        Obj.afterCollision(this,format,format2);
+    var response = new SAT.Response();
+    if(this.element.collision(format2,response)){
+      this.afterCollision(Obj,format2,format,response);
+      Obj.afterCollision(this,format,format2,response);
     }
   },
-  afterCollision:function(Obj,format,objFormat){
-
-  },
+  afterCollision:function(Obj,objFormat,thisFormat,response){ },
   draw:function(){
     this.element.draw();
   }

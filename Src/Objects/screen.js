@@ -23,9 +23,6 @@ Screen.prototype={//métodos do objeto Screen;
     for(var i=0;i<_this.obj.length;i++){
       if(_this.obj.hasOwnProperty(i)){
         _this.obj[i].draw();
-        for(var j=i+1;j<_this.obj.length;j++){
-            _this.obj[i].collision(_this.obj[j]);
-        }
       }
     }
   },

@@ -3,16 +3,17 @@ var Wall = function(start, end, weight,options){
   end = end==undefined?new Vector():end;
   weight = weight==undefined?0:weight;
   options = options==undefined?{}:options;
-  this.name=options.name||"Wall";
-  this.q = 0.01;
-  this.element = SAT.Line(start,end,weight,options);
+  this.name=(options.name==undefined)?"Wall":options.name;
+  // this.element = new SAT.Polygon(points.center,points.corners,options)._recalc();
+  this.element = end.toPolygon(start,weight,options);
 }
 Wall.prototype={
   collision:function(Obj){
     var format = this.element;
     var format2 = Obj.element;
     var response = new SAT.Response();
-    if(this.element.collision(format2,response)){
+    var collide = this.element.collision(format2,response);
+    if(collide){
       this.afterCollision(Obj,format2,format,response);
       Obj.afterCollision(this,format,format2,response);
     }

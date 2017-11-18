@@ -50,15 +50,10 @@
    * @param {?number=} y The y position.
    * @constructor
    */
-
-  SAT["setFunction"]=function(fname,f){
-      SAT[fname]=f;
-  }
-
-  function Vector(x, y, options) {
-    this.options = options||{};
+  function Vector(x, y) {
     this['x'] = x || 0;
     this['y'] = y || 0;
+    this['name'] = "Vector";
   }
   SAT['Vector'] = Vector;
   // Alias `Vector` as `V`
@@ -81,7 +76,7 @@
    * @return {Vector} The new cloned vector
    */
   Vector.prototype['clone'] = Vector.prototype.clone = function() {
-    return new Vector(this['x'], this['y'], this.options);
+    return new Vector(this['x'], this['y']);
   };
 
   // Change this vector to be perpendicular to what it was before. (Effectively
@@ -223,6 +218,13 @@
     return this;
   };
 
+  Vector.prototype['reflectA']=Vector.prototype.reflectA = function(angle){
+    angle *= 2;
+    this.x = Math.cos(angle)*this.x+Math.sin(angle)*this.y;
+    this.y = Math.sin(angle)*this.x-Math.cos(angle)*this.y;
+    return this;
+  }
+
   // Get the dot product of this vector and another.
   /**
    * @param {Vector}  other The vector to dot this one against.
@@ -248,6 +250,38 @@
     return Math.sqrt(this.len2());
   };
 
+  Vector.prototype['getAngle']=function(origin){
+      origin = origin||new Vector();
+      return  Math.atan((this.y-origin.y)/(this.x-origin.x));
+  }
+  Vector.prototype['moduleScale']=function(mod){
+    var angle = this.getAngle();
+    this.x += mod*Math.cos(angle);
+    this.y += mod*Math.sin(angle);
+    return this;
+  }
+
+  Vector.prototype['draw'] = function(origin){
+    var end = new Vector(origin.x,origin.y);
+    end.add(this);
+    ctx.beginPath();
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth=1;
+    ctx.moveTo(origin.x,origin.y);
+    ctx.lineTo(end.x,end.y);
+    ctx.stroke();
+    ctx.closePath();
+  }
+
+  function toDeg(rad){
+    return (180*rad)/Math.PI;
+  }
+  function toRad(deg){
+    return (deg*Math.PI)/180;
+  }
+  SAT['toDeg'] = toDeg;
+  SAT['toRad'] = toRad;
+
   // ## Circle
   //
   // Represents a circle with a position and a radius.
@@ -261,9 +295,12 @@
    * @constructor
    */
   function Circle(pos, r, options) {
-    this.options = options||{};
+    options = options==undefined?{}:options;
     this['pos'] = pos || new Vector();
     this['r'] = r || 0;
+    this.name = "Circle";
+    this.fillcolor = ((options.fillcolor==undefined)?"none":options.fillcolor);
+    this.bordercolor = ((options.bordercolor==undefined)?"none":options.bordercolor);
   }
   SAT['Circle'] = Circle;
 
@@ -276,9 +313,24 @@
   Circle.prototype['getAABB'] = Circle.prototype.getAABB = function() {
     var r = this['r'];
     var corner = this["pos"].clone().sub(new Vector(r, r));
-    return new Box(corner, r*2, r*2,this.options.AABB).toPolygon();
+    return new Box(corner, r*2, r*2).toPolygon();
   };
 
+  //drawing on the screen
+  Circle.prototype['draw'] = function(){
+      ctx.beginPath();
+      ctx.fillStyle=this.fillcolor;
+      ctx.strokeStyle=this.bordercolor;
+      ctx.arc(this.pos.x,this.pos.y,this.r,0,2*Math.PI);
+      if(this.fillcolor!=="none")ctx.fill();
+      if(this.bordercolor!=="none")ctx.stroke();
+      ctx.closePath();
+  }
+
+//CollisionTest
+  Circle.prototype['collision']=function(Obj, response){
+    return SAT['testCircle'+Obj.name](this,Obj,response);
+  }
   // ## Polygon
   //
   // Represents a *convex* polygon with any number of points (specified in counter-clockwise order)
@@ -299,10 +351,13 @@
    * @constructor
    */
   function Polygon(pos, points, options) {
-    this.options = options||{};
+    options = options==undefined?{}:options;
     this['pos'] = pos || new Vector();
     this['angle'] = 0;
     this['offset'] = new Vector();
+    this.name= options.name==undefined?"Polygon":options.name;
+    this.fillcolor = ((options.fillcolor==undefined)?"none":options.fillcolor);
+    this.bordercolor = ((options.bordercolor==undefined)?"none":options.bordercolor);
     this.setPoints(points || []);
   }
   SAT['Polygon'] = Polygon;
@@ -472,9 +527,28 @@
         yMax = point["y"];
       }
     }
-    return new Box(this["pos"].clone().add(new Vector(xMin, yMin)), xMax - xMin, yMax - yMin,this.options.AABB).toPolygon();
+    return new Box(this["pos"].clone().add(new Vector(xMin, yMin)), xMax - xMin, yMax - yMin).toPolygon();
   };
 
+  Polygon.prototype['draw']=function(){
+    ctx.beginPath();
+    ctx.fillStyle = this.fillcolor;
+    ctx.strokeStyle = this.bordercolor;
+    var pos = this.pos;
+   var  points = this.points;
+    ctx.moveTo(points[0].x+pos.x,points[0].y+pos.y);
+    for(var i=1;i<points.length;i++){
+      ctx.lineTo(points[i].x+pos.x,points[i].y+pos.y);
+    }
+    ctx.lineTo(points[0].x+pos.x,points[0].y+pos.y);
+    if(this.fillcolor!=="none")ctx.fill();
+    if(this.bordercolor!=="none")ctx.stroke();
+    ctx.closePath();
+  }
+
+  Polygon.prototype['collision'] = function(Obj,response){
+      return SAT['testPolygon'+Obj.name](this, Obj, response);
+  }
 
   // ## Box
   //
@@ -490,8 +564,7 @@
    * @param {?number=} h The height of the box.
    * @constructor
    */
-  function Box(pos, w, h, options) {
-    this.options = options||{};
+  function Box(pos, w, h) {
     this['pos'] = pos || new Vector();
     this['w'] = w || 0;
     this['h'] = h || 0;
@@ -509,7 +582,7 @@
     return new Polygon(new Vector(pos['x'], pos['y']), [
      new Vector(), new Vector(w, 0),
      new Vector(w,h), new Vector(0,h)
-   ],this.options);
+    ]);
   };
 
   // ## Response
@@ -523,8 +596,7 @@
   /**
    * @constructor
    */
-  function Response(options) {
-    this.options = options||{};
+  function Response() {
     this['a'] = null;
     this['b'] = null;
     this['overlapN'] = new Vector();
@@ -546,6 +618,29 @@
     return this;
   };
 
+  function Line(start,end,weight,options){
+    options = options==undefined?{}:options;
+    var createPoints = function(start,end,weight){
+      var hv = end.clone().sub(start).perp().normalize().moduleScale(weight/2);
+      var p1 = start.clone().add(hv).sub(pos);
+      var p2 = end.clone().add(hv).sub(pos);
+      var p3 = end.clone().sub(hv).sub(pos);
+      var p4 = start.clone().sub(hv).sub(pos);
+      var points = [p1,p2,p3,p4];
+      return points;
+    }
+    options.name = options.name==undefined?"Line":options.name;
+    var pos = new Vector((end.x+start.x)/2, (end.y+start.y)/2);
+    start = start==undefined?new Vector():start;
+    end = (end!=undefined)?end:new Vector();
+    weight = weight || 0;
+    options = options==undefined?{}:options;
+    var points = createPoints(start,end,weight);
+    return new Polygon(pos, points, options);
+  }
+
+
+  SAT['Line']=Line;
   // ## Object Pools
 
   // A pool of `Vector` objects that are used in calculations to avoid
@@ -809,7 +904,6 @@
     var len = points.length;
     var edge = T_VECTORS.pop();
     var point = T_VECTORS.pop();
-
     // For each edge in the polygon:
     for (var i = 0; i < len; i++) {
       var next = i === len - 1 ? 0 : i + 1;
@@ -819,6 +913,7 @@
 
       // Get the edge.
       edge.copy(polygon['edges'][i]);
+
       // Calculate the center of the circle relative to the starting point of the edge.
       point.copy(circlePos).sub(points[i]);
 
@@ -831,6 +926,7 @@
 
       // Calculate which Voronoi region the center of the circle is in.
       var region = voronoiRegion(edge, point);
+
       // If it's the left region:
       if (region === LEFT_VORONOI_REGION) {
         // We need to make sure we're in the RIGHT_VORONOI_REGION of the previous edge.

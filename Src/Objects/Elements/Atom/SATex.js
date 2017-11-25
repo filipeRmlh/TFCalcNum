@@ -64,11 +64,11 @@ var temp;
   }
   var nv  = this.clone().sub(start);
   var l = nv.len();
-  var o = new SAT.Vector(start.x,start.y);
   var alpha = nv.getAngle()*k;
+  var o = this.clone().add(start).scale(1/2);
   var box = new SAT.Box(o,l,w,options);
   var polygon = box.toPolygon();
-  polygon.translate(0,w/2*(-1));
+  polygon.translate(l/2*(-1),w/2*(-1));
   polygon.rotate(alpha);
   return polygon;
 }

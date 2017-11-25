@@ -15,6 +15,7 @@ var Prom = new _Prom();
 Object.prototype.isEmpty = function () {
     return Object.keys(this).length === 0;
 }
+Math.pow2 = function(n){return Math.pow(n,2)};
 String.prototype.toUpperFirst = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }

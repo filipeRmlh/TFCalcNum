@@ -1,6 +1,6 @@
 var ENV={
   density:0,
-  g:-10,
+  g:10,
   k:9*1000000000
 };
 var Screen = function(selector,fps,options){//construtor do objeto Pscreen;
@@ -23,13 +23,18 @@ Screen.prototype={//métodos do objeto Screen;
     for(var i=0;i<_this.obj.length;i++){
       if(_this.obj.hasOwnProperty(i)){
         _this.obj[i].draw();
+        for(var j=i+1;j<_this.obj.length;j++){
+            if(_this.obj[i]!==_this.obj[j]){
+                _this.obj[i].collision(_this.obj[j]);
+            }
+        }
       }
     }
   },
   resize:function(_this){ //método que ajusta o tamanho do "canvas" à TELA;
     var elm = _this.elm;
-    h = window.innerHeight-20;
-    w = window.innerWidth-20;
+    h = window.innerHeight;
+    w = window.innerWidth;
     _this.size={w:w,h:h};
     elm.width=w;
     elm.height=h;
@@ -45,5 +50,11 @@ Screen.prototype={//métodos do objeto Screen;
   add:function(elm){
     elm.screenElms = this.obj;
     this.obj.push(elm);
+  },
+  clearObjects:function(){
+    for(var i = 0;i<this.obj.length;i++){
+      if(this.obj[i].stopMovement!==undefined)this.obj[i].stopMovement();
+    }
+    this.obj=[];
   }
 }

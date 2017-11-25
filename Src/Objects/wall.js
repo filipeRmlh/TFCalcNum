@@ -12,12 +12,14 @@ Wall.prototype={
     var format = this.element;
     var format2 = Obj.element;
     var response = new SAT.Response();
-    var collide = this.element.collision(format2,response);
-    if(collide){
-      this.afterCollision(Obj,format2,format,response);
-      Obj.afterCollision(this,format,format2,response);
+    if(this.element.collision(format2,response)){
+        this.afterCollision(Obj,format2,format,response);
+        response.overlapV.reverse();
+        response.overlapN.reverse();
+        Obj.afterCollision(this,format,format2,response);
     }
   },
+  stopMovement:function(){},
   afterCollision:function(Obj,objFormat,thisFormat,response){ },
   draw:function(){
     this.element.draw();

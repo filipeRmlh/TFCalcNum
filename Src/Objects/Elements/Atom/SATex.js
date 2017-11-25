@@ -49,10 +49,23 @@ SAT.Vector.prototype['draw'] = function(origin){
 }
 
 SAT.Vector.prototype["toPolygon"]= function(start,w,options){
+var temp;
+  k=1;
+  if(start.x>this.x){
+    temp = this.x;
+    this.x = start.x;
+    start.x = temp;
+    k=-1;
+  }
+  if(start.y>this.y){
+    temp = this.y;
+    this.y = start.y;
+    start.y = temp;
+  }
   var nv  = this.clone().sub(start);
   var l = nv.len();
   var o = new SAT.Vector(start.x,start.y);
-  var alpha = nv.getAngle();
+  var alpha = nv.getAngle()*k;
   var box = new SAT.Box(o,l,w,options);
   var polygon = box.toPolygon();
   polygon.translate(0,w/2*(-1));

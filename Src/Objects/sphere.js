@@ -39,7 +39,6 @@ var Sphere = function(position,options){
         return;
       }
     this.moveLoop;
-    this.startMovement();
 }
 Sphere.prototype={
   startMovement:function(){

@@ -10,6 +10,7 @@ var Screen = function(selector,fps,options){//construtor do objeto Pscreen;
   this.fps = (fps===undefined)?10:fps;
   this.elm = document.querySelector(selector);
   this.size={w:0,h:0};
+  this.movement;
   this.trigger();
   if(options.material==undefined){
     options.material = new Material();
@@ -18,6 +19,19 @@ var Screen = function(selector,fps,options){//construtor do objeto Pscreen;
   ENV.g = (options==undefined||options.material==undefined||options.material.gravity==undefined)?10:options.material.gravity;
 }
 Screen.prototype={//métodos do objeto Screen;
+  stopMovement:function(){
+    clearTimeout(this.movement);
+    for(var i = 0;i<this.obj.length;i++){
+      if(this.obj[i].stopMovement!==undefined)this.obj[i].stopMovement();
+    }
+  },
+  startMovement:function(){
+    this.movement = window.setInterval(this.refresh,(1000/this.fps),this);
+    for(var i = 0;i<this.obj.length;i++){
+      console.log(i);
+      if(this.obj[i].startMovement!==undefined)this.obj[i].startMovement();
+    }
+  },
   refresh:function(_this){//método que apaga e pinta todos os elementos na tela a cada frame;
      ctx.clearRect(0,0,_this.size.w,_this.size.h);
     for(var i=0;i<_this.obj.length;i++){
@@ -44,7 +58,6 @@ Screen.prototype={//métodos do objeto Screen;
     ctx = this.elm.getContext("2d");
     _this.resize(_this);
     window.onresize=function(){_this.resize(_this)};
-    window.setInterval(this.refresh,(1000/_this.fps),_this);
 
   },
   add:function(elm){
@@ -52,9 +65,6 @@ Screen.prototype={//métodos do objeto Screen;
     this.obj.push(elm);
   },
   clearObjects:function(){
-    for(var i = 0;i<this.obj.length;i++){
-      if(this.obj[i].stopMovement!==undefined)this.obj[i].stopMovement();
-    }
     this.obj=[];
   }
 }

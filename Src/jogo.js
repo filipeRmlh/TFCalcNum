@@ -7,7 +7,7 @@ load(function(){
   var xs1=1;
   var xs2 = 4;
   var restC = 0.9;
-var myscreen = new Screen("canvas",30,{material:new Material("Air")}); // instancia objeto Screen dando elemento html, número de fps e material pra densidade;
+myscreen = new Screen("canvas",30,{material:new Material("Air")}); // instancia objeto Screen dando elemento html, número de fps e material pra densidade;
 /*
   n calcula a precisão por segundo de reprodução da animação sem alterar o tempo. ou seja, se
 antes de alterar n a esfera andava 8 segundos entre dois pontos a e b, depois de
@@ -57,6 +57,6 @@ for(var i in walls){
     j++;
   }
 }
-
+myscreen.startMovement();
 
 });

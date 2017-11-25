@@ -1,7 +1,7 @@
 importObject("Screen");
 importObject("Sphere");
 importObject("Wall");
-var jan;
+var c = new HarmonicColor();
 load(function(){
   var N=50;
   var xs1=1;
@@ -20,33 +20,43 @@ do cálculo, mas está condicionado a velocidade de processamento e não pode te
 um valor em que multiplicado por n seja maior que 200;
 */
 
-var c = new Sphere(new SAT.Vector(220, 90),  {xspeed2:xs2,xspeed1:xs1,n:N,name:"c",r:10,material:new Material("Iron"),fillcolor:"blue",restCoef:restC});
-var d = new Sphere(new SAT.Vector(220, 120),  {xspeed2:xs2,xspeed1:xs1,n:N,name:"c",r:10,material:new Material("Polypropylene"),fillcolor:"green",restCoef:restC});
-var e = new Sphere(new SAT.Vector(280, 90),  {xspeed2:xs2,xspeed1:xs1,n:N,name:"c",r:10,material:new Material("Polypropylene"),fillcolor:"green",restCoef:restC});
-var f = new Sphere(new SAT.Vector(310, 90),  {xspeed2:xs2,xspeed1:xs1,n:N,name:"c",r:10,material:new Material("Polypropylene"),fillcolor:"green",restCoef:restC});
-var g = new Sphere(new SAT.Vector(330, 90),  {xspeed2:xs2,xspeed1:xs1,n:N,name:"c",r:10,material:new Material("Polypropylene"),fillcolor:"green",restCoef:restC});
-var h = new Sphere(new SAT.Vector(350, 90),  {xspeed2:xs2,xspeed1:xs1,n:N,name:"c",r:10,material:new Material("Polypropylene"),fillcolor:"green",restCoef:restC});
-var i = new Sphere(new SAT.Vector(370, 90),  {xspeed2:xs2,xspeed1:xs1,n:N,name:"c",r:10,material:new Material("Polypropylene"),fillcolor:"green",restCoef:restC});
-var f0 = new Wall(new SAT.Vector(25,25), new SAT.Vector(1000,25), 50,  {fillcolor:"green"});
-var f1 = new Wall(new SAT.Vector(25,25),  new SAT.Vector(25,500),  50,  {fillcolor:"purple"});
-var f2 = new Wall(new SAT.Vector(1000,25),new SAT.Vector(1000,500),50,  {fillcolor:"pink"});
-var f3 = new Wall(new SAT.Vector(25,500),new SAT.Vector(1000,500),50,  {fillcolor:"blue"});
-var f4 = new Wall(new SAT.Vector(240,600),new SAT.Vector(290,320),50,  {fillcolor:"red"});
+var spheres = {};
+var walls = {};
 
+spheres.a=new Sphere(new SAT.Vector(220, 90),  {xspeed2:xs2,xspeed1:xs1,n:N,name:"c",r:10,material:new Material("Iron"),fillcolor:"rgb(0,255,0)",restCoef:restC});
+spheres.b=new Sphere(new SAT.Vector(220, 120),  {xspeed2:xs2,xspeed1:xs1,n:N,name:"c",r:10,material:new Material("Air"),fillcolor:"pink",restCoef:restC});
+spheres.c=new Sphere(new SAT.Vector(280, 90),  {xspeed2:xs2,xspeed1:xs1,n:N,name:"c",massa:10000,material:new Material("Water"),fillcolor:"purple",restCoef:restC});
+spheres.d=new Sphere(new SAT.Vector(310, 90),  {xspeed2:xs2,xspeed1:xs1,n:N,name:"c",r:10,material:new Material("Polypropylene"),fillcolor:"green",restCoef:restC});
+spheres.e=new Sphere(new SAT.Vector(330, 90),  {xspeed2:xs2,xspeed1:xs1,n:N,name:"c",r:10,material:new Material("Polypropylene"),fillcolor:"green",restCoef:restC});
+spheres.f=new Sphere(new SAT.Vector(350, 90),  {xspeed2:xs2,xspeed1:xs1,n:N,name:"c",r:10,material:new Material("Polypropylene"),fillcolor:"green",restCoef:restC});
+spheres.g=new Sphere(new SAT.Vector(370, 90),  {xspeed2:xs2,xspeed1:xs1,n:N,name:"c",r:10,material:new Material("Polypropylene"),fillcolor:"green",restCoef:restC});
 
-myscreen.add(f0);
-myscreen.add(f1);
-myscreen.add(f2);
-myscreen.add(f3);
-myscreen.add(f4);
+walls.a=new Wall(new SAT.Vector(25,25), new SAT.Vector(1000,25),  50);
+walls.b=new Wall(new SAT.Vector(25,25),  new SAT.Vector(25,500),  50);
+walls.c=new Wall(new SAT.Vector(1000,25),new SAT.Vector(1000,500),50);
+walls.d=new Wall(new SAT.Vector(25,500),new SAT.Vector(1000,500), 50);
+walls.e=new Wall(new SAT.Vector(240,600),new SAT.Vector(290,320), 50);
+walls.f=new Wall(new SAT.Vector(290,300),new SAT.Vector(350,320), 50);
 
-myscreen.add(c);
-myscreen.add(d);
-myscreen.add(e);
-myscreen.add(f);
-myscreen.add(g);
-myscreen.add(h);
-myscreen.add(i);
+var cAnalog = c.analog(spheres,"rgb",50);
+var j=0;
+for(var i in spheres){
+  if(spheres.hasOwnProperty(i)){
+    spheres[i].element.options.fillcolor="rgb("+cAnalog[j].r+","+cAnalog[j].g+","+cAnalog[j].b+")";
+    myscreen.add(spheres[i]);
+    j++;
+  }
+}
+
+var cShadow = c.shadow(walls,"rgb",50);
+j=0;
+for(var i in walls){
+  if(walls.hasOwnProperty(i)){
+    walls[i].element.options.fillcolor="rgb("+cShadow[j].r+","+cShadow[j].g+","+cShadow[j].b+")";
+    myscreen.add(walls[i]);
+    j++;
+  }
+}
 
 
 });

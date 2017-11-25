@@ -6,6 +6,8 @@ var ENV={
 var Screen = function(selector,fps,options){//construtor do objeto Pscreen;
   if(selector==undefined)console.error("Não existe um seletor dado");
   options = options==undefined?{}:options;
+  this.height = options.h!==undefined?options.h:600;
+  this.width = options.w!==undefined?options.w:800;
   this.obj=[];
   this.fps = (fps===undefined)?10:fps;
   this.elm = document.querySelector(selector);

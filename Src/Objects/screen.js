@@ -6,8 +6,6 @@ var ENV={
 var Screen = function(selector,fps,options){//construtor do objeto Pscreen;
   if(selector==undefined)console.error("Não existe um seletor dado");
   options = options==undefined?{}:options;
-  this.height = options.h!==undefined?options.h:600;
-  this.width = options.w!==undefined?options.w:800;
   this.obj=[];
   this.fps = (fps===undefined)?10:fps;
   this.elm = document.querySelector(selector);
@@ -30,7 +28,6 @@ Screen.prototype={//métodos do objeto Screen;
   startMovement:function(){
     this.movement = window.setInterval(this.refresh,(1000/this.fps),this);
     for(var i = 0;i<this.obj.length;i++){
-      console.log(i);
       if(this.obj[i].startMovement!==undefined)this.obj[i].startMovement();
     }
   },

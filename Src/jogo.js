@@ -47,16 +47,50 @@ for(var i in spheres){
     j++;
   }
 }
-
-var cShadow = c.shadow(walls,"rgb",50);
+var style=document.getElementById("mystyle");
+var cShadow = c.shadow(walls,"hsl",50);
+var size = Object.keys(walls).length;
+var styleString="";
+k=Math.floor(size/3);
 j=0;
+var n=0;
 for(var i in walls){
   if(walls.hasOwnProperty(i)){
-    walls[i].element.options.fillcolor="rgb("+cShadow[j].r+","+cShadow[j].g+","+cShadow[j].b+")";
+    walls[i].element.options.fillcolor="hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+cShadow[j].l+"%)";
     myscreen.add(walls[i]);
+    if(j==n*k){
+      styleString=styleString+".color"+(n+1)+"{"+
+      "border-color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+cShadow[j].l+"%);"+
+      "color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+cShadow[j].l+"%) !important;"+
+      "background-color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+((cShadow[j].l>57)?10:90)+"%)  !important;}";
+
+      styleString=styleString+".colorBtn"+(n+1)+"{"+
+      "border-color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+cShadow[j].l+"%);"+
+      "color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+cShadow[j].l+"%) !important;"+
+      "background-color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+((cShadow[j].l>57)?10:90)+"%)  !important;}";
+
+      styleString=styleString+".colorBtn"+(n+1)+":hover,.colorBtn"+(n+1)+":active,.colorBtn"+(n+1)+":focus{"+
+      "border-color:hsl("+(cShadow[j].h)+","+(cShadow[j].s)+"%,"+(100-cShadow[j].l)+"%);"+
+      "color:hsl("+(cShadow[j].h)+","+(cShadow[j].s)+"%,"+(100-cShadow[j].l)+"%) !important;"+
+      "background-color:hsl("+(cShadow[j].h)+","+(cShadow[j].s)+"%,"+((cShadow[j].l>57)?80:20)+"%)  !important;}";
+
+      styleString=styleString+".reverseColorBtn"+(n+1)+":hover,.reverseColorBtn"+(n+1)+":active,.reverseColorBtn"+(n+1)+":focus{"+
+      "border-color:hsl("+(cShadow[j].h)+","+(cShadow[j].s)+"%,"+((cShadow[j].l>57)?80:20)+"%);"+
+      "color:hsl("+(cShadow[j].h)+","+(cShadow[j].s)+"%,"+((cShadow[j].l>57)?80:20)+"%) !important;"+
+      "background-color:hsl("+(cShadow[j].h)+","+(cShadow[j].s)+"%,"+(100-cShadow[j].l)+"%)  !important;}";
+
+      styleString=styleString+".reverseColor"+(n+1)+"{"+
+      "background-color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+cShadow[j].l+"%) !important;"+
+      "border-color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+((cShadow[j].l>57)?10:90)+"%);"+
+      "color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+((cShadow[j].l>57)?10:90)+"%)  !important;}";
+      n++;
+    }
     j++;
   }
+
 }
+style.innerHTML=style.innerHTML+styleString;
+
 myscreen.startMovement();
 
 });

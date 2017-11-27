@@ -5,9 +5,9 @@ var c = new HarmonicColor();
 load(function(){
   var N=50;
   var xs1=1;
-  var xs2 = 4;
+  var xs2 = 2;
   var restC = 0.9;
-myscreen = new Screen("canvas",30,{material:new Material("Air")}); // instancia objeto Screen dando elemento html, número de fps e material pra densidade;
+  myscreen = new Screen("canvas",30,{material:new Material("Air")}); // instancia objeto Screen dando elemento html, número de fps e material pra densidade;
 /*
   n calcula a precisão por segundo de reprodução da animação sem alterar o tempo. ou seja, se
 antes de alterar n a esfera andava 8 segundos entre dois pontos a e b, depois de
@@ -42,55 +42,26 @@ var cAnalog = c.analog(spheres,"rgb",50);
 var j=0;
 for(var i in spheres){
   if(spheres.hasOwnProperty(i)){
-    spheres[i].element.options.fillcolor="rgb("+cAnalog[j].r+","+cAnalog[j].g+","+cAnalog[j].b+")";
+    spheres[i].element.options.fillcolor="rgb("+cAnalog[j].r+","+cAnalog[j].g+","+cAnalog[j].b+")";//coloriza as esferas
     myscreen.add(spheres[i]);
     j++;
   }
 }
 var style=document.getElementById("mystyle");
 var cShadow = c.shadow(walls,"hsl",50);
-var size = Object.keys(walls).length;
-var styleString="";
-k=Math.floor(size/3);
-j=0;
-var n=0;
+var size = Object.keys(walls).length, styleString="",k=Math.floor(size/3),j=0,mult=0;
 for(var i in walls){
   if(walls.hasOwnProperty(i)){
-    walls[i].element.options.fillcolor="hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+cShadow[j].l+"%)";
+    walls[i].element.options.fillcolor="hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+cShadow[j].l+"%)";//coloriza as paredes do canvas
     myscreen.add(walls[i]);
-    if(j==n*k){
-      styleString=styleString+".color"+(n+1)+"{"+
-      "border-color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+cShadow[j].l+"%);"+
-      "color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+cShadow[j].l+"%) !important;"+
-      "background-color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+((cShadow[j].l>57)?10:90)+"%)  !important;}";
-
-      styleString=styleString+".colorBtn"+(n+1)+"{"+
-      "border-color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+cShadow[j].l+"%);"+
-      "color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+cShadow[j].l+"%) !important;"+
-      "background-color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+((cShadow[j].l>57)?10:90)+"%)  !important;}";
-
-      styleString=styleString+".colorBtn"+(n+1)+":hover,.colorBtn"+(n+1)+":active,.colorBtn"+(n+1)+":focus{"+
-      "border-color:hsl("+(cShadow[j].h)+","+(cShadow[j].s)+"%,"+(100-cShadow[j].l)+"%);"+
-      "color:hsl("+(cShadow[j].h)+","+(cShadow[j].s)+"%,"+(100-cShadow[j].l)+"%) !important;"+
-      "background-color:hsl("+(cShadow[j].h)+","+(cShadow[j].s)+"%,"+((cShadow[j].l>57)?80:20)+"%)  !important;}";
-
-      styleString=styleString+".reverseColorBtn"+(n+1)+":hover,.reverseColorBtn"+(n+1)+":active,.reverseColorBtn"+(n+1)+":focus{"+
-      "border-color:hsl("+(cShadow[j].h)+","+(cShadow[j].s)+"%,"+((cShadow[j].l>57)?80:20)+"%);"+
-      "color:hsl("+(cShadow[j].h)+","+(cShadow[j].s)+"%,"+((cShadow[j].l>57)?80:20)+"%) !important;"+
-      "background-color:hsl("+(cShadow[j].h)+","+(cShadow[j].s)+"%,"+(100-cShadow[j].l)+"%)  !important;}";
-
-      styleString=styleString+".reverseColor"+(n+1)+"{"+
-      "background-color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+cShadow[j].l+"%) !important;"+
-      "border-color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+((cShadow[j].l>57)?10:90)+"%);"+
-      "color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+((cShadow[j].l>57)?10:90)+"%)  !important;}";
-      n++;
+    if(j==mult*k){
+      styleString = styleString+guiColor(j,mult,cShadow);//constroi classes css pra colorizar a página
+      mult++;
     }
     j++;
   }
 
 }
-style.innerHTML=style.innerHTML+styleString;
-
-myscreen.startMovement();
-
+style.innerHTML=style.innerHTML+styleString;//faz 'append' das classes construidas no elemento style do html;
+myscreen.startMovement();//inicializa tudo;
 });

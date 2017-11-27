@@ -21,8 +21,8 @@ var Sphere = function(position,options){
     this.posk0 = position.clone();
     this.posk1 = position.clone();
     this.element= new SAT.Circle(new SAT.Vector(position.x,position.y),this.r,options);
-    this.kfluid = ((1/2)*ENV.density*0.47*Math.PI*Math.pow(this.r,2));
-    this.massa*=(1/1000);
+    this.kfluid = ((1/2)*ENV.density*0.47*Math.PI*Math.pow(this.r,2));//cálculo do valor da constante de resistência do fluido
+    this.massa*=(1/1000);//adequação à escala de unidades escolhida;
 
     /***************calculo de tempo****************/
       try{
@@ -58,7 +58,6 @@ Sphere.prototype={
     //Método numérico - diferenças centradas//
     posk2.y = (2*Math.pow(h,2)*massa*ENV.g+_this.posk0.y*(_this.kfluid*h-2*massa)+4*massa*_this.posk1.y)/(_this.kfluid*h+2*massa);
     posk2.x = (_this.posk0.x*(_this.kfluid*h-2*massa)+4*massa*_this.posk1.x)/(_this.kfluid*h+2*massa);
-
     _this.posk0.copy(_this.posk1);
     _this.posk1.copy(posk2);
     _this.setPosition();
@@ -77,13 +76,13 @@ Sphere.prototype={
   afterCollision:function(Obj,objFormat,thisFormat,response){
     //pegando a posição imediatamente antes de collidir
     if(Obj.movement===undefined){
-      this.stopMovement();
-      var v1 = this.posk1.clone().sub(this.posk0);
+      this.stopMovement();//para os calculos da diferença finita
+      var v1 = this.posk1.clone().sub(this.posk0);//deslocamento da esfera
       var v1Norm = v1.clone().normalize();
-      var over = response.overlapV.clone();
-      var overPerp = over.clone().perp();
+      var over = response.overlapV.clone();//vetor do quanto a esfera entrou na parede(perpendicular a parede);
+      var overPerp = over.clone().perp();//vetor para pegar inclinação da parede;
       var s = over.clone().project(v1);
-      v1.scale(1/this.h);
+      v1.scale(1/this.h);//velocidade da esfera;
       //Minimização do erro quando a bola entra dentro da parede.
       var vProj = new SAT.V();
       vProj.y = (v1.y/Math.abs(v1.y))*(-1*(s.y*this.kfluid/this.massa)+Math.sqrt(
@@ -94,12 +93,12 @@ Sphere.prototype={
       ));
       //-----------------------------------------------------
       v1.sub(vProj.clone().sub(v1));
-      v1.reflect(overPerp);
+      v1.reflect(overPerp);//reflete a velocidade da esfera na parede
       this.posk0.sub(s);
       this.posk1.sub(s);
       this.setPosition();
-      this.posk1 = this.posk0.clone().add(v1.clone().scale((this.restCoef)*this.h));
-     this.startMovement();
+      this.posk1 = this.posk0.clone().add(v1.clone().scale((this.restCoef)*this.h));//calcula posição seguinte baseada na velocidade refletida
+     this.startMovement(); // reinicia os cálculos da diferença finita com novas as novas posições iniciais calculadas;
     }
   },
   draw:function(){

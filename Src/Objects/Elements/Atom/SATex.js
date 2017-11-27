@@ -1,3 +1,5 @@
+//Funções adicionadas a API SAT.js para adequação à finalidade do projeto;
+//Para o correto funcionamento dessas funções a própria API foi ligeiramente modificada;
 //Extras
 
 SAT.setFunction('toDeg',function (rad){
@@ -48,7 +50,7 @@ SAT.Vector.prototype['draw'] = function(origin){
   ctx.closePath();
 }
 
-SAT.Vector.prototype["toPolygon"]= function(start,w,options){
+SAT.Vector.prototype["toPolygon"]= function(start,w,options){// Esta função é útil para criação de paredes
 var temp;
   k=1;
   if(start.x>this.x){

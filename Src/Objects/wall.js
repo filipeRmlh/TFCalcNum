@@ -4,7 +4,6 @@ var Wall = function(start, end, weight,options){
   weight = weight==undefined?0:weight;
   options = options==undefined?{}:options;
   this.name=(options.name==undefined)?"Wall":options.name;
-  // this.element = new SAT.Polygon(points.center,points.corners,options)._recalc();
   this.element = end.toPolygon(start,weight,options);
 }
 Wall.prototype={

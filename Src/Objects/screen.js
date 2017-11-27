@@ -1,9 +1,8 @@
-var ENV={
+var ENV={//Variáveis do ambiente simulado
   density:0,
   g:10,
-  k:9*1000000000
 };
-var Screen = function(selector,fps,options){//construtor do objeto Pscreen;
+var Screen = function(selector,fps,options){//construtor do objeto Screen;
   if(selector==undefined)console.error("Não existe um seletor dado");
   options = options==undefined?{}:options;
   this.obj=[];
@@ -19,13 +18,13 @@ var Screen = function(selector,fps,options){//construtor do objeto Pscreen;
   ENV.g = (options==undefined||options.material==undefined||options.material.gravity==undefined)?10:options.material.gravity;
 }
 Screen.prototype={//métodos do objeto Screen;
-  stopMovement:function(){
+  stopMovement:function(){//pára a animação de todos o objetos adicionados à tela.
     clearTimeout(this.movement);
     for(var i = 0;i<this.obj.length;i++){
       if(this.obj[i].stopMovement!==undefined)this.obj[i].stopMovement();
     }
   },
-  startMovement:function(){
+  startMovement:function(){ //inicializa animação de todos o objetos adicionados à tela.
     this.movement = window.setInterval(this.refresh,(1000/this.fps),this);
     for(var i = 0;i<this.obj.length;i++){
       if(this.obj[i].startMovement!==undefined)this.obj[i].startMovement();
@@ -52,18 +51,17 @@ Screen.prototype={//métodos do objeto Screen;
     elm.width=w;
     elm.height=h;
   },
-  trigger:function(){//método que inicializa funções repetitivas e eventos ligados à TELA;
+  trigger:function(){//inicializa eventos e variáveis globais ligadas à TELA;
     var _this=this;
     ctx = this.elm.getContext("2d");
     _this.resize(_this);
     window.onresize=function(){_this.resize(_this)};
-
   },
   add:function(elm){
-    elm.screenElms = this.obj;
     this.obj.push(elm);
   },
   clearObjects:function(){
+    this.stopMovement();
     this.obj=[];
   }
 }

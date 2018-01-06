@@ -7,7 +7,7 @@ var Finish = function(position,game,nextlevel,options){
     options.fillcolor = "hsl("+this.color.h+","+this.color.s+"%,"+this.lum+"%)";
     this.game = game;
     this.nextlevel=nextlevel;
-    
+    this.clearSave=(options.clearSave==undefined)?false:options.clearSave;
     position = position==undefined?new SAT.Vector():position;
     this.name = "Finish";
     this.element= new SAT.Circle(new SAT.Vector(position.x,position.y),options.r,options);
@@ -30,6 +30,7 @@ Finish.prototype={
       this.game.screen.obj = [];
       this.game.user.obj=[];
       this.game.user.first=0;
+      if(this.clearSave)setCookie("level","");
       loadLevel(this.nextlevel,this.game);
     }
   },

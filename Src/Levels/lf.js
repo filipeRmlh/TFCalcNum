@@ -1,7 +1,7 @@
 var lf = (function(game){
   var walls = {};
   var finish = {
-    a:new Finish(new SAT.Vector(140,250),game,1, {r:30,textBox:{font:"14pt Helvetica",text:"Reiniciar",pos:new SAT.V(-35,50)}})
+    a:new Finish(new SAT.Vector(140,250),game,1, {clearSave:true,r:30,textBox:{font:"14pt Helvetica",text:"Reiniciar",pos:new SAT.V(-35,50)}})
   }
   var actions = {
       a:new Action(new SAT.Vector(800,250),game,function(_this){

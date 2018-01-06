@@ -1,8 +1,6 @@
 var Screen = function(selector,fps,options){//construtor do objeto Screen;
   if(selector==undefined)console.error("Não existe um seletor dado");
-
   options = options==undefined?{}:options;
-  this.userObj=[];
   this.obj=[];
   this.fps = (fps===undefined)?10:fps;
   this.elm = document.querySelector(selector);
@@ -57,9 +55,6 @@ Screen.prototype={//métodos do objeto Screen;
     window.onresize=function(){_this.resize(_this)};
   },
   add:function(elm){
-    if(elm.name == "userObj"){
-      this.userObj.index = this.obj.length;
-    }
     this.obj.push(elm);
   },
   clearObjects:function(){

@@ -1,10 +1,8 @@
-var ENV={//Variáveis do ambiente simulado
-  density:0,
-  g:10,
-};
 var Screen = function(selector,fps,options){//construtor do objeto Screen;
   if(selector==undefined)console.error("Não existe um seletor dado");
+
   options = options==undefined?{}:options;
+  this.userObj=[];
   this.obj=[];
   this.fps = (fps===undefined)?10:fps;
   this.elm = document.querySelector(selector);
@@ -15,7 +13,7 @@ var Screen = function(selector,fps,options){//construtor do objeto Screen;
     options.material = new Material();
   }
   ENV.density = options.material.Standard.density
-  ENV.g = (options==undefined||options.material==undefined||options.material.gravity==undefined)?10:options.material.gravity;
+  ENV.g = (options==undefined||options.material==undefined||options.material.gravity==undefined)?(new SAT.V(0,10)):options.material.gravity;
 }
 Screen.prototype={//métodos do objeto Screen;
   stopMovement:function(){//pára a animação de todos o objetos adicionados à tela.
@@ -31,7 +29,7 @@ Screen.prototype={//métodos do objeto Screen;
     }
   },
   refresh:function(_this){//método que apaga e pinta todos os elementos na tela a cada frame;
-     ctx.clearRect(0,0,_this.size.w,_this.size.h);
+    ctx.clearRect(0,0,_this.size.w,_this.size.h);
     for(var i=0;i<_this.obj.length;i++){
       if(_this.obj.hasOwnProperty(i)){
         _this.obj[i].draw();
@@ -42,6 +40,7 @@ Screen.prototype={//métodos do objeto Screen;
         }
       }
     }
+    ENV.GDraw();
   },
   resize:function(_this){ //método que ajusta o tamanho do "canvas" à TELA;
     var elm = _this.elm;
@@ -58,6 +57,9 @@ Screen.prototype={//métodos do objeto Screen;
     window.onresize=function(){_this.resize(_this)};
   },
   add:function(elm){
+    if(elm.name == "userObj"){
+      this.userObj.index = this.obj.length;
+    }
     this.obj.push(elm);
   },
   clearObjects:function(){

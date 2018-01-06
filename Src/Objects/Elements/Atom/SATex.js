@@ -29,7 +29,7 @@ SAT.setFunction('getTimeLog',function($varName,destroy){
 SAT.Vector.prototype['name'] = "Vector";
 SAT.Vector.prototype['getAngle']=function(origin){
     origin = origin||new SAT.Vector();
-    return  Math.atan((this.y-origin.y)/(this.x-origin.x));
+    return  Math.atan2((this.y-origin.y),(this.x-origin.x));
 }
 SAT.Vector.prototype['moduleScale']=function(mod){
   var angle = this.getAngle();
@@ -37,15 +37,27 @@ SAT.Vector.prototype['moduleScale']=function(mod){
   this.y += mod*Math.sin(angle);
   return this;
 }
-SAT.Vector.prototype['draw'] = function(origin){
+
+SAT.Vector.prototype['draw'] = function(origin,options){
+  options.scale=options.scale||1;
   origin = origin||new SAT.Vector();
   var end = new SAT.Vector(origin.x,origin.y);
-  end.add(this);
+  end.add(this.clone().scale(options.scale));
+  var headlen = 5;   // length of head in pixels
+  var angle = Math.atan2(end.y-origin.y,end.x-origin.x);
   ctx.beginPath();
   ctx.strokeStyle = "#000000";
+  ctx.fillStyle = "#000000"
   ctx.lineWidth=this.options.width||1;
-  ctx.moveTo(origin.x,origin.y);
-  ctx.lineTo(end.x,end.y);
+  ctx.moveTo(origin.x, origin.y);
+  ctx.lineTo(end.x, end.y);
+  ctx.lineTo(end.x-headlen*Math.cos(angle-Math.PI/6),end.y-headlen*Math.sin(angle-Math.PI/6));
+  ctx.moveTo(end.x, end.y);
+  ctx.lineTo(end.x-headlen*Math.cos(angle+Math.PI/6),end.y-headlen*Math.sin(angle+Math.PI/6));
+  if(options.textBox!==undefined){
+    ctx.font = options.textBox.font;
+    ctx.fillText(options.textBox.text,origin.x,origin.y);
+  }
   ctx.stroke();
   ctx.closePath();
 }
@@ -75,16 +87,22 @@ var temp;
   return polygon;
 }
 
-
 //circle
 SAT.Circle.prototype['name'] = "Circle";
 SAT.Circle.prototype['draw'] = function(){
   ctx.beginPath();
+  // options.textBox:{font:"12pt Sans-Serif",text:,position:}
+  ctx.lineWidth = this.options.lineWidth||1;
   ctx.fillStyle=this.options.fillcolor;
   ctx.strokeStyle=this.options.bordercolor;
   ctx.arc(this.pos.x,this.pos.y,this.r,0,2*Math.PI);
-  if(this.options.fillcolor!=="none")ctx.fill();
-  if(this.options.bordercolor!=="none")ctx.stroke();
+  if((this.options.fillcolor!=="none")&&(this.options.fillcolor!==undefined))ctx.fill();
+  if((this.options.bordercolor!=="none")&&(this.options.bordercolor!==undefined))ctx.stroke();
+  if(this.options.textBox!==undefined){
+    ctx.fillStyle = this.options.textBox.color==undefined?ctx.fillStyle:this.options.textBox.color;
+    ctx.font = this.options.textBox.font==undefined?"12pt Sans-Serif":this.options.textBox.font;
+    ctx.fillText(this.options.textBox.text,(this.pos.x+this.options.textBox.pos.x),(this.pos.y+this.options.textBox.pos.y));
+  }
   ctx.closePath();
 }
 SAT.Circle.prototype['collision']=function(Obj, response){
@@ -104,8 +122,8 @@ SAT.Polygon.prototype['draw']=function(){
     ctx.lineTo(points[i].x+pos.x,points[i].y+pos.y);
   }
   ctx.lineTo(points[0].x+pos.x,points[0].y+pos.y);
-  if(this.options.fillcolor!=="none")ctx.fill();
-  if(this.options.bordercolor!=="none")ctx.stroke();
+  if((this.options.fillcolor!=="none")&&(this.options.fillcolor!==undefined))ctx.fill();
+  if((this.options.bordercolor!=="none")&&(this.options.bordercolor!==undefined))ctx.stroke();
   ctx.closePath();
 }
 

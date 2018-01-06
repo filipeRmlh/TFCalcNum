@@ -5,6 +5,7 @@ var Sphere = function(position,options){
     position = position==undefined?new SAT.Vector():position;
     options.material = options.material==undefined?new Material():options.material;
     this.name = options.name||"Sphere";
+    this.dead=false;
     this.restCoef = (options.restCoef==undefined||options.restCoef>=0.995)?0.855:options.restCoef;
     this.screenElms;
     /********Propriedades Físicas*********************/
@@ -41,6 +42,10 @@ var Sphere = function(position,options){
     this.moveLoop;
 }
 Sphere.prototype={
+  stopAll: function(){
+    this.stopMovement();
+    this.dead=true;
+  },
   startMovement:function(){
     this.moveLoop = setInterval(this.movement,this.time,this);
   },
@@ -56,52 +61,52 @@ Sphere.prototype={
     var massa = _this.massa;
     var posk2 = new SAT.Vector();
     //Método numérico - diferenças centradas//
-    posk2.y = (2*Math.pow(h,2)*massa*ENV.g+_this.posk0.y*(_this.kfluid*h-2*massa)+4*massa*_this.posk1.y)/(_this.kfluid*h+2*massa);
-    posk2.x = (_this.posk0.x*(_this.kfluid*h-2*massa)+4*massa*_this.posk1.x)/(_this.kfluid*h+2*massa);
+    posk2.y = (2*Math.pow(h,2)*massa*ENV.g.y+_this.posk0.y*(_this.kfluid*h-2*massa)+4*massa*_this.posk1.y)/(_this.kfluid*h+2*massa);
+    posk2.x = (2*Math.pow(h,2)*massa*ENV.g.x+_this.posk0.x*(_this.kfluid*h-2*massa)+4*massa*_this.posk1.x)/(_this.kfluid*h+2*massa);
     _this.posk0.copy(_this.posk1);
     _this.posk1.copy(posk2);
     _this.setPosition();
   },
   collision:function(Obj){
-    var format = this.element;
-    var format2 = Obj.element;
-    var response = new SAT.Response();
-    if(this.element.collision(format2,response)){
-        this.afterCollision(Obj,format2,format,response);
-        response.overlapV.reverse();
-        response.overlapN.reverse();
-        Obj.afterCollision(this,format,format2,response);
-    }
+      var format = this.element;
+      var format2 = Obj.element;
+      var response = new SAT.Response();
+      if(this.element.collision(format2,response)){
+          this.afterCollision(Obj,format2,format,response);
+          response.overlapV.reverse();
+          response.overlapN.reverse();
+          Obj.afterCollision(this,format,format2,response);
+      }
   },
   afterCollision:function(Obj,objFormat,thisFormat,response){
     //pegando a posição imediatamente antes de collidir
-    if(Obj.movement===undefined){
-      this.stopMovement();//para os calculos da diferença finita
-      var v1 = this.posk1.clone().sub(this.posk0);//deslocamento da esfera
-      var v1Norm = v1.clone().normalize();
-      var over = response.overlapV.clone();//vetor do quanto a esfera entrou na parede(perpendicular a parede);
-      var overPerp = over.clone().perp();//vetor para pegar inclinação da parede;
-      var s = over.clone().project(v1);
-      v1.scale(1/this.h);//velocidade da esfera;
-      //Minimização do erro quando a bola entra dentro da parede.
-      var vProj = new SAT.V();
-      vProj.y = (v1.y/Math.abs(v1.y))*(-1*(s.y*this.kfluid/this.massa)+Math.sqrt(
-        -1*Math.pow2(s.y*this.kfluid/this.massa)+2*Math.sqrt(Math.pow2(s.y))*ENV.g+Math.pow2(v1.y)
-      ));
-      vProj.x = (v1.x/Math.abs(v1.x))*(-1*(s.x*this.kfluid/this.massa)+Math.sqrt(
-        -1*Math.pow2(s.x*this.kfluid/this.massa)+Math.pow2(v1.x)
-      ));
-      //-----------------------------------------------------
-      v1.sub(vProj.clone().sub(v1));
-      v1.reflect(overPerp);//reflete a velocidade da esfera na parede
-      this.posk0.sub(s);
-      this.posk1.sub(s);
-      this.setPosition();
-      this.posk1 = this.posk0.clone().add(v1.clone().scale((this.restCoef)*this.h));//calcula posição seguinte baseada na velocidade refletida
-     this.startMovement(); // reinicia os cálculos da diferença finita com novas as novas posições iniciais calculadas;
+    if(!this.dead){
+      if(Obj.dontdraw===true)return;
+      if((Obj.movement===undefined)&&((Obj.name!="Teleport")&&((Obj.name=="Action"&&Obj.activeCollision)||(Obj.name!="Action")))){
+        this.stopMovement();//para os calculos da diferença finita
+        var v1 = this.posk1.clone().sub(this.posk0);//deslocamento da esfera
+        var v1Norm = v1.clone().normalize();
+        var over = response.overlapV.clone();//vetor do quanto a esfera entrou na parede(perpendicular a parede);
+        var overPerp = over.clone().perp();//vetor para pegar inclinação da parede;
+        var s = over.clone().project(v1);
+        v1.scale(1/this.h);//velocidade da esfera;
+        //Minimização do erro quando a bola entra dentro da parede.
+        var vProj = new SAT.V();
+        //-----------------------------------------------------
+        // v1.sub(vProj.clone().sub(v1));
+        v1.reflect(overPerp);//reflete a velocidade da esfera na parede
+        this.posk0.sub(s);
+        this.posk1.sub(s);
+        this.setPosition();
+        this.posk1 = this.posk0.clone().add(v1.clone().scale((this.restCoef)*this.h));//calcula posição seguinte baseada na velocidade refletida
+       this.startMovement(); // reinicia os cálculos da diferença finita com novas as novas posições iniciais calculadas;
+      }
     }
   },
   draw:function(){
-    this.element.draw()
+    if(!this.dead){
+      this.element.draw()
+    }
+
   }
 }

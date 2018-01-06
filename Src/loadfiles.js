@@ -1,4 +1,35 @@
 var ctx;
+loadLevel = function(level,game){
+    game.user.miny = 0;
+    game.user.maxy = Infinity;
+    game.user.minx = 0;
+    game.user.maxx = Infinity;
+    loadFile("/Src/Levels/l"+level+".js");
+    var f=function(){};
+    setTimeout(function(){
+     try {
+        f = eval("l"+level);
+        game.walls=undefined;
+        game.teleports=undefined;
+        game.finish = undefined;
+        game.actions = undefined;
+        f(game);
+     } catch (e) {
+       loadFile("/Src/Levels/lf.js");
+       setTimeout(function(){
+         try {
+            f = eval("lf");
+            game.walls=undefined;
+            game.teleports=undefined;
+            game.finish = undefined;
+            f(game);
+         } catch (e) {
+            console.log("Erro no carregamento de fase");
+         }
+       },500);
+     }
+    },500);
+}
 _Prom = function(){};
 _Prom.prototype={
   el:[],
@@ -24,6 +55,7 @@ var path = document.location+"";
 path = (path.replace('/index.html',''));
 var folderTree={
   Src:{
+    Levels:{},
     Objects:{
       Elements:{
         Atom:{}
@@ -43,10 +75,12 @@ function loadTree(obj,lista){
 
 function loadFile(url){
   var fullpath = ((url[0]==='/')?'':'/')+url+"";
-  var html = document.querySelector("body");
+  if(document.querySelector("[src$=\""+fullpath+"\"]")==undefined){
+    var html = document.querySelector("body");
     var elm = document.createElement("script");
     elm.setAttribute("src",path+url);
     html.appendChild(elm);
+  }
 }
 
 loadTree(folderTree);

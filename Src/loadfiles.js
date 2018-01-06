@@ -1,5 +1,19 @@
 var ctx;
+getCookie=function(cookie){
+  var regex =new RegExp("(?:(?:^|.*;\\s*)"+cookie+"\\s*\\=\\s*([^;]*).*$)|^.*$");
+  if(document.cookie.replace(regex, "$1")==""){ return  undefined; }else{ return document.cookie.replace(regex, "$1");}
+}
+setCookie = function(cookie,value){
+  document.cookie=cookie+"="+value;
+}
 loadLevel = function(level,game){
+    var l = getCookie("level");
+    if(l!=undefined){
+      l = parseInt(l);
+      if(l>level)
+      level=l;
+    }
+    setCookie("level",level);
     game.user.miny = 0;
     game.user.maxy = Infinity;
     game.user.minx = 0;

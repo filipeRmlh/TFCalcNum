@@ -14,6 +14,8 @@ loadLevel = function(level,game){
       level=l;
     }
     setCookie("level",level);
+    ENV.g.x=0;
+    ENV.g.y=10;
     game.user.miny = 0;
     game.user.maxy = Infinity;
     game.user.minx = 0;

@@ -4,8 +4,8 @@ var Action = function(position,game,action,options){
     this.lastSphere;
     this.color = 0;
     this.colorchange=true;
-    this.activeCollision=false;
-    this.activeAction=true;
+    this.activeCollision=options.collides||false;
+    this.activeAction=options.collides||true;
     options.fillcolor = "hsl("+this.color+",100%,97%)";
     this.game = game;
     this.action=action;

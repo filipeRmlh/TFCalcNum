@@ -12,7 +12,7 @@ function User(settings,myscreen,options){
   this.first = 0; //indice do primeiro elemento criado.
   this.obj=[];
 
-  this.header = document.querySelectorAll("header")[0];
+  this.htmlOptions = document.querySelectorAll("#options")[0];
   this.htimev = 500;
   this.fillcolor=options.fillcolor==undefined?"rgba(0,255,0,0.5)":options.fillcolor;
   this.bordercolor=options.bordercolor==undefined?"rgb(0,255,0)":options.bordercolor;
@@ -25,7 +25,7 @@ function User(settings,myscreen,options){
   this.myscreen = myscreen;
   this.x = 0;this.y=0;
   this.sphere;
-  this.htime=setTimeout(function(){_this.header.style.opacity=0;},5000);
+  this.htime=setTimeout(function(){toggleOptions()},1000);
   this.events();
   this.createElement();
 }
@@ -58,7 +58,7 @@ User.prototype.actions={
     _this.y = ((y>_this.maxy)?_this.maxy:((y<_this.miny)?_this.miny:y));
   },
   mousemove:function(_this,e){
-    if(_this.sphere!=undefined){
+    if((_this.sphere!=undefined)&&(e.target.id=="canvas")){
       _this.sphere.stopMovement();
       var x = e.clientX;
       var y = e.clientY;
@@ -85,11 +85,12 @@ User.prototype.actions={
   },
   contextmenu:function(_this,e){
     e.preventDefault();
-    clearTimeout(_this.htime);
-    _this.header.style.opacity=1;
-    _this.htime = setTimeout(function(){
-      _this.header.style.opacity=0;
-    },_this.htimev);
+    // clearTimeout(_this.htime);
+    // _this.htmlOptions.style.display="flex";
+    // _this.htmlOptions.style.opacity="";
+    // _this.htime = setTimeout(function(){
+    //   _this.htmlOptions.style.display="none";
+    // },10000);
     return false;
   }
 }

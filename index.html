@@ -7,21 +7,28 @@
     <style id="mystyle" media="screen"></style>
   </head>
   <body>
-    <header class="color2">
-      <div class="headl ">
+    <div id="options" class="color2">
+      <div class="optionsh ">
         <span>Trabalho Final de Cálculo Numérico<span><br>
         <span style="font-size:10pt">por Filipe Ramalho</span>
       </div>
-      <div class="headr">
+      <div class="optionsm">
+
+      </div>
+      <div class="optionsf">
         <a class="colorBtn2" href="javascript:game.user.openModal()">
           Abrir Relatório
         </a>
+        <a class="colorBtn2" target="_blank" href="https://github.com/filipeRmlh/TFCalcNum">
+          Abrir GitHub
+        </a>
       </div>
-    </header>
+      <a id="keyopen" class="colorBtn2" href="javascript:toggleOptions()">Fechar</a>
+    </div>
     <canvas id="canvas" width="0" height="0"></canvas>
-    
+
     <div class="containerContent color1">
-      <span class="closeBtn colorBtn1" onclick="game.user.closeModal()">
+      <span class="closeBtn colorBtn2" onclick="game.user.closeModal()">
           Fechar
       </span>
       <div class="content">

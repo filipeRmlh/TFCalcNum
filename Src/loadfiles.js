@@ -6,14 +6,26 @@ getCookie=function(cookie){
 setCookie = function(cookie,value){
   document.cookie=cookie+"="+value;
 }
-loadLevel = function(level,game){
+loadLevel = function(level,game,force){
+    game.screen.stopMovement();
+    game.screen.obj = [];
+    game.user.obj=[];
+    game.user.first=0;
     var l = getCookie("level");
+    var lu = getCookie("levelunblocked");
     if(l!=undefined){
       l = parseInt(l);
-      if(l>level)
+      if((l>level)&&(force!==true))
       level=l;
     }
+    if(lu!=undefined){
+      lu=parseInt(lu);
+      if(lu<level)lu=level;
+    }else{
+      lu=level;
+    }
     setCookie("level",level);
+    setCookie("levelunblocked",lu);
     ENV.g.x=0;
     ENV.g.y=10;
     game.user.miny = 0;
@@ -45,6 +57,7 @@ loadLevel = function(level,game){
        },500);
      }
     },500);
+    countLevels();
 }
 _Prom = function(){};
 _Prom.prototype={
@@ -130,6 +143,37 @@ function guiColor(j,n,cShadow){
     "background-color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+cShadow[j].l+"%) !important;"+
     "border-color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+((cShadow[j].l>57)?10:90)+"%);"+
     "color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+((cShadow[j].l>57)?10:90)+"%)  !important;}";
-
     return styleString;
+}
+
+var countLevels = function(){
+  var l = getCookie("levelunblocked");
+  var cont = document.querySelectorAll(".optionsm")[0];
+  cont.innerHTML="";
+  for(var i=1;i<=l;i++){
+    var el = document.createElement("div");
+    el.setAttribute("id","l"+(i));
+    el.setAttribute("class","levelblock colorBtn2");
+    el.setAttribute("onclick","loadLevel("+i+",game,true)");
+    el.innerText="Nível "+i;
+    cont.appendChild(el);
+  }
+}
+optionsOpened = false;
+toggleOptions = function(){
+  var menuKey = document.querySelectorAll("#keyopen")[0];
+  var menu = document.querySelectorAll("#options")[0];
+  menuKey.blur();
+  if(optionsOpened){
+    menuKey.style="";
+    menuKey.innerText="Fechar";
+    menu.style="";
+    optionsOpened=false;
+  }else{
+    menuKey.style="width:100%;height:100%; text-align:center; padding:20px 0";
+    menuKey.innerText="Menu";
+    menu.style="width:50px; height:50px; border-radius:200px; top:none; bottom:20px !important;right:20px!important";
+    optionsOpened=true;
+    //menu.style="left:-79%; top:-44%";
+  }
 }

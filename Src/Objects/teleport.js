@@ -2,8 +2,12 @@ importAtom("Material");
 var Teleport = function(position,game,options){
     options = options==undefined?{}:options;
     this.color = 0;
-    options.fillcolor = "hsl("+this.color+",100%,60%)";
-    options.bordercolor = "hsl("+this.color+",100%,60%)";
+    this.mod=0;
+    this.divide=4;
+    this.sobeColor=true;
+    this.lum = this.color.l||0;
+    options.fillcolor = "hsl("+this.color.h+",100%,0%)";
+    options.bordercolor = "hsl("+this.color.h+",100%,0%)";
     options.lineWidth = 1;
     this.game = game;
     this.r=options.r;
@@ -54,10 +58,17 @@ Teleport.prototype={
     }
   },
   draw:function(){
-    this.color++;
-    this.color=this.color%360;
-    this.element.options.bordercolor="hsl("+this.color+",90%,30%)";
-    this.element.options.fillcolor = "hsl("+this.color+",70%,10%)";
+    if((this.mod%this.divide)==0){
+      if(this.sobeColor){this.lum++}else{this.lum--}
+      if(this.lum > 15)this.sobeColor=false;
+      if(this.lum < 0)this.sobeColor=true;
+      this.element.options.fillcolor="hsl("+this.color.h+","+this.color.s+"%,"+this.lum+"%)";
+      this.element.options.bordercolor="hsl("+this.color.h+",100%,60%)";
+
+      if(this.element.options.textBox!=undefined)this.element.options.textBox.color="hsl("+this.color+",100%,40%)";
+      this.mod=0;
+    }
+    this.mod++;
     this.element.draw()
   }
 }

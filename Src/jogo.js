@@ -26,12 +26,14 @@ includeObjects = function(game){
   j=0
   for(var i in game.teleports){
     if(game.teleports.hasOwnProperty(i)){
+      game.teleports[i].color = wallMiddleColor;
       game.screen.add(game.teleports[i]);
       j++;
     }
   }
   for(var i in game.actions){
     if(game.actions.hasOwnProperty(i)){
+      game.actions[i].color = wallMiddleColor;
       game.screen.add(game.actions[i]);
     }
   }

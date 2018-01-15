@@ -53,6 +53,9 @@ var l5 = (function(game){
   walls.m=new Wall(new SAT.Vector(425,15),new SAT.Vector(425,65), 10);
   walls.n=new Wall(new SAT.Vector(425,615),new SAT.Vector(425,545), 10);
 
+  walls.o=new Wall(new SAT.Vector(425,615),new SAT.Vector(425,545), 10);
+
+
   // walls.j=new Wall(new SAT.Vector(230,460),new SAT.Vector(230,540), 10);
   // walls.k=new Wall(new SAT.Vector(263,460),new SAT.Vector(263,540), 10);
   // walls.l=new Wall(new SAT.Vector(230,540),new SAT.Vector(263,540), 10);
@@ -69,13 +72,11 @@ var l5 = (function(game){
     fAction(_this,new SAT.V(0,-10));
   }, {r:7});
   actions.c=new Action(new SAT.Vector(600,40),game,function(_this){
-
     game.walls.m.dontdraw=false;
     game.walls.n.dontdraw=false;
     fAction(_this,new SAT.V(10,0));
   }, {r:7});
   actions.d=new Action(new SAT.Vector(600,580),game,function(_this){
-    ENV.setG(new SAT.V(10,0),10);
     game.walls.m.dontdraw=false;
     game.walls.n.dontdraw=false;
     fAction(_this,new SAT.V(10,0));

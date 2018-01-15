@@ -2,6 +2,8 @@ importAtom("Material");
 var Finish = function(position,game,nextlevel,options){
     options = options==undefined?{}:options;
     this.color = 0;
+    this.mod=0;
+    this.divide=2;
     this.sobeColor=true;
     this.lum = this.color.l||50;
     options.fillcolor = "hsl("+this.color.h+","+this.color.s+"%,"+this.lum+"%)";
@@ -26,19 +28,19 @@ Finish.prototype={
   },
   afterCollision:function(Obj,objFormat,thisFormat,response){
     if(!isNaN(response.overlap)&&(Obj.movement!=undefined)){
-      this.game.screen.stopMovement();
-      this.game.screen.obj = [];
-      this.game.user.obj=[];
-      this.game.user.first=0;
       if(this.clearSave)setCookie("level","");
-      loadLevel(this.nextlevel,this.game);
+      loadLevel(this.nextlevel,this.game,true);
     }
   },
   draw:function(){
-    if(this.sobeColor){this.lum++}else{this.lum--}
-    if(this.lum > 60)this.sobeColor=false;
-    if(this.lum < 40)this.sobeColor=true;
-    this.element.options.fillcolor="hsl("+this.color.h+","+this.color.s+"%,"+this.lum+"%)";
+    if((this.mod%this.divide)==0){
+      if(this.sobeColor){this.lum++}else{this.lum--}
+      if(this.lum > 60)this.sobeColor=false;
+      if(this.lum < 40)this.sobeColor=true;
+      this.element.options.fillcolor="hsl("+this.color.h+","+this.color.s+"%,"+this.lum+"%)";
+      this.mod=0;
+    }
+    this.mod++;
     this.element.draw()
   }
 }

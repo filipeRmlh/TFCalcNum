@@ -16,9 +16,6 @@ var l5 = (function(game){
   var fAction=function(_this,config){
     _this.activeAction=false;
     _this.colorchange=false;
-    _this.element.options.fillcolor="#ddd";
-    _this.element.options.bordercolor="#777";
-    _this.element.options.lineWidth=3;
     if(_this.game.finish.a.count==undefined)_this.game.finish.a.count=0;
     if(_this.game.finish.a.count>=3){
       ENV.setG(new SAT.V(-10,0),10);
@@ -54,12 +51,6 @@ var l5 = (function(game){
   walls.n=new Wall(new SAT.Vector(425,615),new SAT.Vector(425,545), 10);
 
   walls.o=new Wall(new SAT.Vector(425,615),new SAT.Vector(425,545), 10);
-
-
-  // walls.j=new Wall(new SAT.Vector(230,460),new SAT.Vector(230,540), 10);
-  // walls.k=new Wall(new SAT.Vector(263,460),new SAT.Vector(263,540), 10);
-  // walls.l=new Wall(new SAT.Vector(230,540),new SAT.Vector(263,540), 10);
-  // walls.m=new Wall(new SAT.Vector(190,380),new SAT.Vector(263,400), 10);
 
    actions.a=new Action(new SAT.Vector(1000,260),game,function(_this){
      game.walls.m.dontdraw=true;

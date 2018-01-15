@@ -51,7 +51,6 @@ Teleport.prototype={
       var r = this.destiny.r+Obj.r+1;
       var t = relpos1.getAngle();
       var rel2 = new SAT.V(r*Math.cos(t),r*Math.sin(t));
-      //if(relpos1.x<0)rel2.reverse();//corrige erro do sistema de pegar sempre menor angulo.
       Obj.posk0.copy(destinypos.clone().sub(rel2));
       Obj.posk1 = Obj.posk0.clone().add(v1);
       Obj.startMovement(); // reinicia os cálculos da diferença finita com novas as novas posições iniciais calculadas;

@@ -18,6 +18,16 @@ var Action = function(position,game,action,options){
     this.element= new SAT.Circle(new SAT.Vector(position.x,position.y),options.r,options);
 }
 Action.prototype={
+  setOver:function(){
+    this.colorchange=false;
+    this.activeAction=false;
+    this.element.options.lineWidth=3;
+  },
+  unsetOver:function(){
+    this.colorchange=true;
+    this.activeAction=true;
+    this.element.options.lineWidth=1;
+  },
   collision:function(Obj){
     if(this.activeAction){
       var format = this.element;

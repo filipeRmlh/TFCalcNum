@@ -79,7 +79,6 @@ var temp;
 SAT.Circle.prototype['name'] = "Circle";
 SAT.Circle.prototype['draw'] = function(){
   ctx.beginPath();
-  // options.textBox:{font:"12pt Sans-Serif",text:,position:}
   ctx.lineWidth = this.options.lineWidth||1;
   ctx.fillStyle=this.options.fillcolor;
   ctx.strokeStyle=this.options.bordercolor;

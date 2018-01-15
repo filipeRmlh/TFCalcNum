@@ -16,9 +16,7 @@ var l4 = (function(game){
     _this.game.finish.a.count=0;
     for(i in _this.game.actions){
       if(_this.game.actions.hasOwnProperty(i)){
-        _this.game.actions[i].colorchange=true;
-        _this.game.actions[i].activeAction=true;
-        _this.game.actions[i].element.options.lineWidth=1;
+        _this.game.action[i].unsetOver();
       }
     }
     return configDestiny(_this,original);
@@ -35,11 +33,7 @@ var l4 = (function(game){
   var fAction=function(_this,config){
     _this.game.walls.d.dontdraw=true;
     setTimeout(function(){_this.game.walls.d.dontdraw=false},7000);
-    _this.activeAction=false;
-    _this.colorchange=false;
-    _this.element.options.fillcolor="#ddd";
-    _this.element.options.bordercolor="#777";
-    _this.element.options.lineWidth=3;
+    _this.setOver();
     if(_this.game.finish.a.count==undefined)_this.game.finish.a.count=0;
     if(_this.game.finish.a.count>=3){
       configDestiny(_this,{
@@ -57,10 +51,7 @@ var l4 = (function(game){
   walls.g=new Wall(new SAT.Vector(400,50),new SAT.Vector(400,200), 50);
   walls.h=new Wall(new SAT.Vector(600,50),new SAT.Vector(600,200), 50);
   walls.i=new Wall(new SAT.Vector(800,50),new SAT.Vector(800,200), 50);
-  // walls.j=new Wall(new SAT.Vector(230,460),new SAT.Vector(230,540), 10);
-  // walls.k=new Wall(new SAT.Vector(263,460),new SAT.Vector(263,540), 10);
-  // walls.l=new Wall(new SAT.Vector(230,540),new SAT.Vector(263,540), 10);
-  // walls.m=new Wall(new SAT.Vector(190,380),new SAT.Vector(263,400), 10);
+
   actions.a=new Action(new SAT.Vector(100,100),game,function(_this){
     var config = {};
     if(_this.game.finish.a.count<3){
@@ -108,10 +99,6 @@ var l4 = (function(game){
   teleports.l = new Teleport(new SAT.Vector(400,400),game,{r:20,destiny:teleports.j});
   teleports.m = new Teleport(new SAT.Vector(600,400),game,{r:20,destiny:teleports.f});
   teleports.n = new Teleport(new SAT.Vector(900,400),game,{r:20,destiny:teleports.c});
-
-
-
-
 
   game.walls=walls;
   game.teleports=teleports;

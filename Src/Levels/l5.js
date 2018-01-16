@@ -16,6 +16,7 @@ var l5 = (function(game){
   var fAction=function(_this,config){
     _this.activeAction=false;
     _this.colorchange=false;
+    _this.setOver();
     if(_this.game.finish.a.count==undefined)_this.game.finish.a.count=0;
     if(_this.game.finish.a.count>=3){
       ENV.setG(new SAT.V(-10,0),10);

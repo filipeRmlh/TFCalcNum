@@ -57,13 +57,14 @@ Action.prototype={
         if(this.lum < 90)this.sobeColor=true;
         this.element.options.fillcolor="hsl("+this.color.h+","+this.color.s+"%,"+this.lum+"%)";
         this.element.options.bordercolor="hsl("+this.color.h+",100%,40%)";
-        if(this.element.options.textBox!=undefined)this.element.options.textBox.color="hsl("+this.color+",100%,40%)";
+        if(this.element.options.textBox!=undefined)this.element.options.textBox.color="hsl("+this.color.h+",100%,40%)";
         this.mod=0;
       }
       this.mod++;
     }else{
       this.element.options.fillcolor="hsl("+this.color.h+","+this.color.s+"%,90%)";
       this.element.options.bordercolor="hsl("+this.color.h+",100%,50%)";
+      if(this.element.options.textBox!=undefined)this.element.options.textBox.color="hsl("+this.color.h+",100%,40%)";
     }
     this.element.draw()
   }

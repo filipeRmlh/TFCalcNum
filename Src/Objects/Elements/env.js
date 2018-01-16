@@ -12,14 +12,14 @@ _ENV.prototype.setPos = function(x,y){
 _ENV.prototype.GDraw=function(){
   this.g.draw(this.origin,{scale:this.drawScale,textBox:{font:"12pt Sans-Serif",text:"G"}});
 }
-_ENV.prototype.setG=function(to,steps){
+_ENV.prototype.setG=function(to,steps){ //Animação do vetor G na tela;
   var _this=this;
   var r = to.len()-this.g.len();
   var t = to.getAngle()-this.g.getAngle();
   var piece = {r:(r/steps),t:(t/steps)};
   this.timechange=setTimeout(function(){_this.moveGAux(piece,steps)},41);
 }
-_ENV.prototype.moveGAux=function(piece,steps){
+_ENV.prototype.moveGAux=function(piece,steps){ //Função Auxiliar de setG
   if(steps == 0){
     return
   }
@@ -34,4 +34,4 @@ _ENV.prototype.moveGAux=function(piece,steps){
   this.timechange=setTimeout(function(){_this.moveGAux(piece,steps)},41);
 }
 
-ENV = new _ENV();
+ENV = new _ENV();//instanciando _ENV na variável global ENV;

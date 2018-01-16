@@ -16,7 +16,7 @@ var l4 = (function(game){
     _this.game.finish.a.count=0;
     for(i in _this.game.actions){
       if(_this.game.actions.hasOwnProperty(i)){
-        _this.game.action[i].unsetOver();
+        _this.game.actions[i].unsetOver();
       }
     }
     return configDestiny(_this,original);

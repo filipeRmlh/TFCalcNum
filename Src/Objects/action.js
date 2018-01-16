@@ -1,13 +1,15 @@
 importAtom("Material");
 var Action = function(position,game,action,options){
     options = options==undefined?{}:options;
-    this.lastSphere;
+    this.lastSphere;//pegar a ultima esfera que colidiu
+    /*variáveis auxiliares para gerencia da animação da cor*/
     this.mod=0;
     this.divide=4;
     this.color = 0;
     this.sobeColor=true;
     this.lum = this.color.l||100;
     this.colorchange=true;
+    /*---------------------------------------------*/
     this.activeCollision=options.collides||false;
     this.activeAction=options.collides||true;
     options.fillcolor = "hsl("+this.color+",100%,100%)";

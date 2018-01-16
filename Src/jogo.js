@@ -10,7 +10,7 @@ includeObjects = function(game){
   var style=document.getElementById("mystyle");
   var cShadow = c.shadow(game.walls,"hsl",50);
   var size = Object.keys(game.walls).length, styleString="",k=Math.floor(size/3),j=0,mult=0;
-  for(var i in game.walls){
+  for(var i in game.walls){//Coloriza walls, adiciona a screen e constroi classes css de cor;
     if(game.walls.hasOwnProperty(i)){
       game.walls[i].element.options.fillcolor="hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+cShadow[j].l+"%)";//coloriza as paredes do canvas
       game.screen.add(game.walls[i]);
@@ -24,14 +24,14 @@ includeObjects = function(game){
   var wallMiddleColor = cShadow[Math.ceil(size/2)];
 
   j=0
-  for(var i in game.teleports){
+  for(var i in game.teleports){//coloriza teleports e adiciona a screen;
     if(game.teleports.hasOwnProperty(i)){
       game.teleports[i].color = wallMiddleColor;
       game.screen.add(game.teleports[i]);
       j++;
     }
   }
-  for(var i in game.actions){
+  for(var i in game.actions){//coloriza Actions e adiciona a screen;
     if(game.actions.hasOwnProperty(i)){
       game.actions[i].color = wallMiddleColor;
       game.screen.add(game.actions[i]);
@@ -39,7 +39,7 @@ includeObjects = function(game){
   }
   style.innerHTML=style.innerHTML+styleString;//faz 'append' das classes construidas no elemento style do html;
   if(game.finish!=undefined){
-    for(var i in game.finish){
+    for(var i in game.finish){//coloriza Finish e adiciona a screen;
       if(game.finish.hasOwnProperty(i)){
         game.finish[i].color = wallMiddleColor;
         game.screen.add(game.finish[i]);

@@ -1,11 +1,13 @@
 importAtom("Material");
 var Finish = function(position,game,nextlevel,options){
     options = options==undefined?{}:options;
+    /*variáveis auxiliares para gerencia da animação da cor*/
     this.color = 0;
     this.mod=0;
     this.divide=2;
     this.sobeColor=true;
     this.lum = this.color.l||50;
+    /*-------------------------------------------------------*/
     options.fillcolor = "hsl("+this.color.h+","+this.color.s+"%,"+this.lum+"%)";
     this.game = game;
     this.nextlevel=nextlevel;

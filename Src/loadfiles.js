@@ -6,7 +6,7 @@ getCookie=function(cookie){
 setCookie = function(cookie,value){
   document.cookie=cookie+"="+value;
 }
-loadLevel = function(level,game,force){
+loadLevel = function(level,game,force){//função para carregar os níveis e resetar configurações globais;
     game.screen.stopMovement();
     game.screen.obj = [];
     game.user.obj=[];
@@ -117,7 +117,7 @@ var load = function(f){
   window.addEventListener("load",function(){Prom.exec();f()});
 }
 
-function guiColor(j,n,cShadow){
+function guiColor(j,n,cShadow){//função que gera css de colorização;
     var styleString = "";
     styleString=styleString+".color"+(n+1)+"{"+
     "border-color:hsl("+cShadow[j].h+","+cShadow[j].s+"%,"+cShadow[j].l+"%);"+
@@ -146,7 +146,7 @@ function guiColor(j,n,cShadow){
     return styleString;
 }
 
-var countLevels = function(){
+var countLevels = function(){ //Função que escreve os níveis no menu;
   var l = getCookie("levelunblocked");
   var cont = document.querySelectorAll(".optionsm")[0];
   cont.innerHTML="";
@@ -160,7 +160,7 @@ var countLevels = function(){
   }
 }
 optionsOpened = false;
-toggleOptions = function(){
+toggleOptions = function(){//função que faz o menu aparecer e esconder;
   var menuKey = document.querySelectorAll("#keyopen")[0];
   var menu = document.querySelectorAll("#options")[0];
   menuKey.blur();
@@ -174,6 +174,5 @@ toggleOptions = function(){
     menuKey.innerText="Menu";
     menu.style="width:50px; height:50px; border-radius:200px; top:none; bottom:20px !important;right:20px!important";
     optionsOpened=true;
-    //menu.style="left:-79%; top:-44%";
   }
 }

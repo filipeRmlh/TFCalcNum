@@ -1,7 +1,7 @@
 //Funções adicionadas a API SAT.js para adequação à finalidade do projeto;
 //Para o correto funcionamento dessas funções a própria API foi ligeiramente modificada;
-//Extras
 
+//Extras
 SAT.setFunction('toDeg',function (rad){
   return (180*rad)/Math.PI;
 });
@@ -75,7 +75,7 @@ var temp;
   return polygon;
 }
 
-//circle
+//Circle
 SAT.Circle.prototype['name'] = "Circle";
 SAT.Circle.prototype['draw'] = function(){
   ctx.beginPath();

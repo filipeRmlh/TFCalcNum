@@ -1,11 +1,13 @@
 importAtom("Material");
 var Teleport = function(position,game,options){
     options = options==undefined?{}:options;
+    /*variáveis auxiliares para gerencia da animação da cor*/
     this.color = 0;
     this.mod=0;
     this.divide=4;
     this.sobeColor=true;
     this.lum = this.color.l||0;
+    /*---------------------------------------------------*/
     options.fillcolor = "hsl("+this.color.h+",100%,0%)";
     options.bordercolor = "hsl("+this.color.h+",100%,0%)";
     options.lineWidth = 1;
@@ -14,7 +16,7 @@ var Teleport = function(position,game,options){
     position = position==undefined?new SAT.Vector():position;
     this.name = "Teleport";
     this.element= new SAT.Circle(new SAT.Vector(position.x,position.y),options.r,options);
-    this.destiny;
+    this.destiny;//Variével que referencia o outro portal ao qual este objeto está vinculado;
     if(options.destiny==undefined){
       this.destiny = this;
     }else{
@@ -47,13 +49,13 @@ Teleport.prototype={
       var thispos = this.element.pos;
       var destinypos=this.destiny.element.pos;
 
-      var relpos1 = Obj.posk0.clone().sub(thispos).normalize();//posição0 relativa a entrada do teletransporte
+      var relpos1 = Obj.posk0.clone().sub(thispos).normalize();//posição relativa a entrada do teletransporte
       var r = this.destiny.r+Obj.r+1;
       var t = relpos1.getAngle();
       var rel2 = new SAT.V(r*Math.cos(t),r*Math.sin(t));
       Obj.posk0.copy(destinypos.clone().sub(rel2));
       Obj.posk1 = Obj.posk0.clone().add(v1);
-      Obj.startMovement(); // reinicia os cálculos da diferença finita com novas as novas posições iniciais calculadas;
+      Obj.startMovement(); // reinicia os cálculos da diferença finita com as novas posições iniciais calculadas;
     }
   },
   draw:function(){

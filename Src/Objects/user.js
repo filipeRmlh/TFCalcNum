@@ -12,24 +12,26 @@ function User(settings,myscreen,options){
   this.first = 0; //indice do primeiro elemento criado.
   this.obj=[];
 
-  this.htmlOptions = document.querySelectorAll("#options")[0];
+  this.htmlOptions = document.querySelectorAll("#options")[0];//Seletor do menu;
   this.htimev = 500;
   this.fillcolor=options.fillcolor==undefined?"rgba(0,255,0,0.5)":options.fillcolor;
   this.bordercolor=options.bordercolor==undefined?"rgb(0,255,0)":options.bordercolor;
   this.lock=false;
+  /*Posições Máximas e Mínimas da esfera possíveis*/
   this.minx = options.minx||0;
   this.maxx = options.maxx||Infinity;
   this.miny = options.miny||0;
   this.maxy = options.maxy||Infinity;
+  /*-------------------------------------------------*/
   this.settings=settings;
   this.myscreen = myscreen;
   this.x = 0;this.y=0;
   this.sphere;
-  this.htime=setTimeout(function(){toggleOptions()},1000);
+  this.htime=setTimeout(function(){toggleOptions()},1000);//depois que a página é carregada, espera 1 segundo e fecha menu
   this.events();
   this.createElement();
 }
-User.prototype.events = function(){
+User.prototype.events = function(){//função para carregar todos os eventos de usuário capturados pelo sistema;
   var _this = this;
   for(i in this.actions){
     if(this.actions.hasOwnProperty(i)){
@@ -84,13 +86,7 @@ User.prototype.actions={
     }
   },
   contextmenu:function(_this,e){
-    e.preventDefault();
-    // clearTimeout(_this.htime);
-    // _this.htmlOptions.style.display="flex";
-    // _this.htmlOptions.style.opacity="";
-    // _this.htime = setTimeout(function(){
-    //   _this.htmlOptions.style.display="none";
-    // },10000);
+    e.preventDefault();//impedir que abra menu de contexto no meio do jogo;
     return false;
   }
 }
